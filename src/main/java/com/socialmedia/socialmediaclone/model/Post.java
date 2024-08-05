@@ -3,6 +3,7 @@ package com.socialmedia.socialmediaclone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -19,11 +20,14 @@ public class Post {
     @Column(name = "idPost", nullable = false)
     private Integer id;
 
-    @Column(name = "totalLikes", nullable = false)
-    private Integer totalLikes;
+    @Builder.Default
+    private Integer totalLikes = 0;
 
     @Column(name = "description", length = 150)
     private String description;
+
+    @Column(name = "dateCreated", nullable = false)
+    private LocalDate dateCreated;
 
     @Column(name = "image")
     private byte[] image;

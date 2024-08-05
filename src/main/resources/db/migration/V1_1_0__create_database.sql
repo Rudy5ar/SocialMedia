@@ -13,8 +13,9 @@ CREATE TABLE IF NOT EXISTS `User`
 CREATE TABLE IF NOT EXISTS `Post`
 (
     `idPost`      INT          NOT NULL AUTO_INCREMENT,
-    `totalLikes`  INT          NOT NULL,
+    `totalLikes`  INT          NOT NULL DEFAULT 0,
     `description` VARCHAR(150) NULL,
+    `dateCreated` DATE         NOT NULL,
     `image`       BLOB         NULL,
     `idUser`      INT          NOT NULL,
     PRIMARY KEY (`idPost`)
@@ -32,9 +33,10 @@ CREATE TABLE IF NOT EXISTS `Comment`
 
 CREATE TABLE IF NOT EXISTS `Like`
 (
-    `idLike` INT NOT NULL AUTO_INCREMENT,
-    `idUser` INT NOT NULL,
-    `idPost` INT NOT NULL,
+    `dateLiked` DATE NOT NULL,
+    `idLike`    INT  NOT NULL AUTO_INCREMENT,
+    `idUser`    INT  NOT NULL,
+    `idPost`    INT  NOT NULL,
     PRIMARY KEY (`idLike`)
 );
 

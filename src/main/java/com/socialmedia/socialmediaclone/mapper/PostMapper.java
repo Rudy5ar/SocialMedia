@@ -1,10 +1,10 @@
 package com.socialmedia.socialmediaclone.mapper;
 
-import com.socialmedia.socialmediaclone.dto.CommentDTO;
 import com.socialmedia.socialmediaclone.dto.PostDTO;
-import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.Post;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostMapper {
     public PostDTO toDto(Post p) {
         return PostDTO.builder()
