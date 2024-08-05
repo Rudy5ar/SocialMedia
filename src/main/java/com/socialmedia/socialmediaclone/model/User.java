@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -29,12 +30,11 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "idUser")
-    private Set<Comment> comments = new LinkedHashSet<>();
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "idUser")
-    private Set<Like> likes = new LinkedHashSet<>();
+    private List<Like> likes;
 
     @OneToMany(mappedBy = "idUser")
-    private Set<Post> posts = new LinkedHashSet<>();
-
+    private List<Post> posts;
 }

@@ -36,8 +36,13 @@ public class PostController {
     }
 
     @DeleteMapping("{id}")
-    public void deletePost(@PathVariable int id){
+    public void deletePost(@PathVariable long id){
         postService.deletePost(id);
+    }
+
+    @PutMapping("likePost")
+    public Post likePost(@RequestParam int idPost, @RequestParam int idUser){
+        return postService.likePost(idPost, idUser);
     }
 
 }

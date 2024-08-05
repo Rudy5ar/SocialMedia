@@ -18,8 +18,8 @@ public class Like {
     @Column(name = "idLike", nullable = false)
     private Integer id;
 
-    @Column(name = "dateLiked", nullable = false)
-    private LocalDate dateLiked;
+    @Builder.Default
+    private LocalDate dateLiked = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUser", nullable = false)

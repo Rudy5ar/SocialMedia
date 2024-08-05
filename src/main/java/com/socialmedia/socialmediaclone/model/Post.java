@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -37,7 +38,7 @@ public class Post {
     private User idUser;
 
     @OneToMany(mappedBy = "idPost")
-    private Set<Comment> comments = new LinkedHashSet<>();
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "idPost")
     private Set<Like> likes = new LinkedHashSet<>();

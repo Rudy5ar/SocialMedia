@@ -9,25 +9,19 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idComment", nullable = false)
-    private Integer id;
+    private Integer idComment;
 
-    @Column(name = "text", nullable = false, length = 45)
     private String text;
 
-    @Column(name = "numOfLikes", nullable = false)
     private Integer numOfLikes;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idPost", nullable = false)
     private Post idPost;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idUser", nullable = false)
     private User idUser;
 
 }
