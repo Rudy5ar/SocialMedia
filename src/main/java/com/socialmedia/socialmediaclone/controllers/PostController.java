@@ -19,18 +19,18 @@ public class PostController {
         this.postMapper = postMapper;
     }
 
-    @GetMapping("{pageNumber}")
-    public Page<PostDTO> getPosts(@PathVariable int pageNumber){
-        Page<Post> pages = postService.getPosts(pageNumber);
+    @GetMapping
+    public Page<PostDTO> getPosts(@RequestParam int pageNumber, @RequestParam int pageSize){
+        Page<Post> pages = postService.getPosts(pageNumber, pageSize);
         return pages.map(postMapper::toDto);
     }
 
-    @PostMapping("")
+    @PostMapping
     public Post createPost(@RequestParam String description){
         return postService.createPost(description);
     }
 
-    @PutMapping("")
+    @PutMapping
     public Post updatePost(@RequestBody Post post){
         return postService.updatePost(post);
     }
@@ -40,9 +40,9 @@ public class PostController {
         postService.deletePost(id);
     }
 
-    @PutMapping("likePost")
-    public Post likePost(@RequestParam int idPost, @RequestParam int idUser){
-        return postService.likePost(idPost, idUser);
+    @PutMapping("likeDislikePost")
+    public Post likeDislikePost(@RequestParam long idPost, @RequestParam long idUser){
+        return postService.likeDislikePost(idPost, idUser);
     }
 
 }

@@ -15,18 +15,18 @@ import java.time.LocalDate;
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idLike", nullable = false)
-    private Integer id;
+    @Column(name = "idLike")
+    private Long id;
 
     @Builder.Default
     private LocalDate dateLiked = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUser", nullable = false)
-    private User idUser;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idPost", nullable = false)
-    private Post idPost;
+    private Post post;
 
 }

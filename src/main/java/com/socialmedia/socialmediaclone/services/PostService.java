@@ -1,5 +1,6 @@
 package com.socialmedia.socialmediaclone.services;
 
+import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.Like;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.model.User;
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-
+import java.util.Objects;
 
 @Service
 public class PostService {
@@ -28,9 +29,8 @@ public class PostService {
         this.likeRepository = likeRepository;
     }
 
-    public Page<Post> getPosts(int pageNumber) {
-
-        Pageable p = PageRequest.of(pageNumber, 5);
+    public Page<Post> getPosts(int pageNumber, int pageSize) {
+        Pageable p = PageRequest.of(pageNumber, pageSize);
         return postRepository.findAll(p);
     }
 
@@ -38,7 +38,7 @@ public class PostService {
         Post newPost = new Post();
         newPost.setDescription(description);
         newPost.setDateCreated(LocalDate.now());
-        newPost.setIdUser(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("No user")));
+        newPost.setUser(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("No user")));
         postRepository.save(newPost);
         return newPost;
     }
@@ -52,11 +52,24 @@ public class PostService {
     }
 
     @Transactional
-    public Post likePost(long idPost, long idUser) {
-        Post post = postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found with id: " + idPost));
+    public Post likeDislikePost(long idPost, long idUser) {
+        Post post = postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found"));
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("User not found"));
+
+        for (Like like : post.getLikes()) {
+            if (like.getUser().equals(user)) {
+                return dislikePost(user, post);
+            }
+        }
+
+        return likePost(user, post);
+    }
+
+    @Transactional
+    public Post likePost(User user, Post post) {
         Like like = new Like();
-        like.setIdUser(userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("No user")));
-        like.setIdPost(post);
+        like.setUser(user);
+        like.setPost(post);
         likeRepository.save(like);
 
         post.getLikes().add(like);
@@ -64,11 +77,14 @@ public class PostService {
         return post;
     }
 
-    public Post dislikePost(long idPost, long idUser) {
-        Post post = postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found with id: " + idPost));
-        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("No user"));
+    @Transactional
+    public Post dislikePost(User user, Post post) {
+        Like like = likeRepository.findByUserAndPost(user, post);
         post.setTotalLikes(post.getTotalLikes() - 1);
-        likeRepository.deleteByUserAndPost(user, post);
+        post.getLikes().remove(like);
+        postRepository.save(post);
+        likeRepository.delete(like);
         return post;
     }
+
 }

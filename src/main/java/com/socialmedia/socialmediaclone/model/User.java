@@ -3,9 +3,8 @@ package com.socialmedia.socialmediaclone.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,24 +16,30 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idUser", nullable = false)
-    private Integer id;
+    @Column(name = "idUser")
+    private Long id;
 
-    @Column(name = "username", nullable = false, length = 45)
     private String username;
 
-    @Column(name = "email", nullable = false, length = 45)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 45)
     private String password;
 
-    @OneToMany(mappedBy = "idUser")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idUser")
-    private List<Like> likes;
+    @OneToMany(mappedBy = "user")
+    private List<Like> likes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "idUser")
-    private List<Post> posts;
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "likedUsers")
+    private List<Comment> likedComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follower")
+    private List<Following> following = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followed")
+    private List<Following> followers = new ArrayList<>();
 }
