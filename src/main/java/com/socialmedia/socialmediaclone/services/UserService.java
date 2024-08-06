@@ -3,6 +3,7 @@ package com.socialmedia.socialmediaclone.services;
 import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.repository.FollowingRepository;
 import com.socialmedia.socialmediaclone.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.socialmedia.socialmediaclone.model.User;
@@ -30,6 +31,7 @@ public class UserService {
         return following;
     }
 
+    @Transactional
     public boolean acceptFollow(long userId, long toFollowId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         User followed = userRepository.findById(toFollowId).orElseThrow(() -> new RuntimeException("User to follow not found"));
