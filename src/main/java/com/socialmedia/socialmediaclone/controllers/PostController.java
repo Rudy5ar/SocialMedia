@@ -5,6 +5,10 @@ import com.socialmedia.socialmediaclone.mapper.PostMapper;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.services.PostService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,29 +27,40 @@ public class PostController {
     }
 
     @GetMapping
-    public Page<PostDTO> getPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Page<Post> pages = postService.getPosts(pageNumber, pageSize);
-        return pages.map(postMapper::toDto);
+    public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        try {
+            Page<Post> pages = postService.getPosts(pageNumber, pageSize);
+            return new ResponseEntity<>(pages.map(postMapper::toDto), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public Post createPost(@RequestParam String description, @RequestParam("file") MultipartFile file) throws IOException {
-        return postService.createPost(description, file);
+    public ResponseEntity<Post> createPost(@RequestParam String description, @RequestParam("file") MultipartFile file) {
+        try {
+            return new ResponseEntity<>(postService.createPost(description, file), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PutMapping
-    public Post updatePost(@RequestBody Post post) {
-        return postService.updatePost(post);
-    }
-
-    @DeleteMapping("{id}")
-    public void deletePost(@PathVariable long id) {
-        postService.deletePost(id);
+    @DeleteMapping("{postId}")
+    public ResponseEntity<Boolean> deletePost(@PathVariable long postId) {
+        postService.deletePost(postId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("likeDislikePost")
-    public Post likeDislikePost(@RequestParam long idPost, @RequestParam long idUser) {
-        return postService.likeDislikePost(idPost, idUser);
+    public ResponseEntity<Post> likeDislikePost(@RequestParam long idPost, @RequestParam long idUser) {
+        try {
+            return new ResponseEntity<>(postService.likeDislikePost(idPost, idUser), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -1,7 +1,10 @@
 package com.socialmedia.socialmediaclone.controllers;
 
+import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.services.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,13 +18,23 @@ public class UserController {
     }
 
     @PostMapping("follow")
-    public Following follow(@RequestParam long userId, @RequestParam long followerId) {
-        return userService.follow(userId, followerId);
+    public ResponseEntity<Following> follow(@RequestParam long userId, @RequestParam long followerId) {
+        try {
+            return new ResponseEntity<>(userService.follow(userId, followerId), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("acceptFollow")
-    public boolean acceptFollow(@RequestParam long userId, @RequestParam long toFollowId) {
-        return userService.acceptFollow(userId, toFollowId);
+    public ResponseEntity<Boolean> acceptFollow(@RequestParam long userId, @RequestParam long toFollowId) {
+        try {
+            return new ResponseEntity<>(userService.acceptFollow(userId, toFollowId), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -44,10 +44,6 @@ public class PostService {
         return newPost;
     }
 
-    public Post updatePost(Post post) {
-        return postRepository.save(post);
-    }
-
     public void deletePost(long postId) {
         postRepository.delete(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("No post found with id: " + postId)));
     }
