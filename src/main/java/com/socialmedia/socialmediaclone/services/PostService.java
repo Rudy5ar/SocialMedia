@@ -1,6 +1,5 @@
 package com.socialmedia.socialmediaclone.services;
 
-import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.Like;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.model.User;
@@ -12,9 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Service
 public class PostService {
@@ -34,9 +34,10 @@ public class PostService {
         return postRepository.findAll(p);
     }
 
-    public Post createPost(String description) {
+    public Post createPost(String description, MultipartFile file) throws IOException {
         Post newPost = new Post();
         newPost.setDescription(description);
+        newPost.setImage(file.getBytes());
         newPost.setDateCreated(LocalDate.now());
         newPost.setUser(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("No user")));
         postRepository.save(newPost);

@@ -29,4 +29,18 @@ public class UserService {
 
         return following;
     }
+
+    public boolean acceptFollow(long userId, long toFollowId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User followed = userRepository.findById(toFollowId).orElseThrow(() -> new RuntimeException("User to follow not found"));
+        Following request = followingRepository.findByFollowerAndFollowed(user, followed).orElseThrow(() -> new RuntimeException("Follow request not found"));
+
+        request.setPending(false);
+        followingRepository.save(request);
+        user.getFollowing().add(request);
+        followed.getFollowers().add(request);
+        userRepository.save(user);
+        userRepository.save(followed);
+        return true;
+    }
 }
