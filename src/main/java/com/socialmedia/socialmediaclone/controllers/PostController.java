@@ -4,22 +4,14 @@ import com.socialmedia.socialmediaclone.dto.PostDTO;
 import com.socialmedia.socialmediaclone.mapper.PostMapper;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.services.PostService;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Encoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.crypto.SecretKey;
-import java.io.IOException;
-
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/posts/")
 public class PostController {
 
     private final PostService postService;
@@ -30,13 +22,21 @@ public class PostController {
         this.postMapper = postMapper;
     }
 
-    @GetMapping
-    public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    @GetMapping("getFollowedPosts")
+    public ResponseEntity<Page<PostDTO>> getFollowedPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        try {
+            Page<Post> pages = postService.getFollowedPosts(pageNumber, pageSize);
+            return new ResponseEntity<>(pages.map(postMapper::toDto), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("getPrivatePosts")
+    public ResponseEntity<Page<PostDTO>> getPrivatePosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
         try {
             Page<Post> pages = postService.getPosts(pageNumber, pageSize);
-            SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-            String secretString = Encoders.BASE64.encode(key.getEncoded());
-            System.out.println(secretString);
             return new ResponseEntity<>(pages.map(postMapper::toDto), HttpStatus.OK);
         }
         catch (Exception e) {
@@ -61,9 +61,9 @@ public class PostController {
     }
 
     @PutMapping("likeDislikePost")
-    public ResponseEntity<Post> likeDislikePost(@RequestParam long idPost, @RequestParam long idUser) {
+    public ResponseEntity<Post> likeDislikePost(@RequestParam long idPost) {
         try {
-            return new ResponseEntity<>(postService.likeDislikePost(idPost, idUser), HttpStatus.OK);
+            return new ResponseEntity<>(postService.likeDislikePost(idPost), HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

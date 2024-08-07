@@ -8,24 +8,23 @@ import lombok.*;
 @Entity
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor@Table(name = "Following")
+@AllArgsConstructor
+@Table(name = "Following")
 public class Following {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idFollowing")
     private Long idFollowing;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUser1")
     private User follower;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idUser2")
     private User followed;
 
     @Column(name = "pending")
     @Builder.Default
     private boolean pending = true;
-
 }
