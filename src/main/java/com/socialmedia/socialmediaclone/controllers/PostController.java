@@ -4,6 +4,9 @@ import com.socialmedia.socialmediaclone.dto.PostDTO;
 import com.socialmedia.socialmediaclone.mapper.PostMapper;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.services.PostService;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 
 @RestController
@@ -30,6 +34,9 @@ public class PostController {
     public ResponseEntity<Page<PostDTO>> getPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
         try {
             Page<Post> pages = postService.getPosts(pageNumber, pageSize);
+            SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            String secretString = Encoders.BASE64.encode(key.getEncoded());
+            System.out.println(secretString);
             return new ResponseEntity<>(pages.map(postMapper::toDto), HttpStatus.OK);
         }
         catch (Exception e) {

@@ -4,6 +4,8 @@ import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.repository.FollowingRepository;
 import com.socialmedia.socialmediaclone.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.socialmedia.socialmediaclone.model.User;
@@ -44,5 +46,10 @@ public class UserService {
         userRepository.save(user);
         userRepository.save(followed);
         return true;
+    }
+
+    public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 }
