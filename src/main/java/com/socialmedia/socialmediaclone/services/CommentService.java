@@ -1,8 +1,10 @@
 package com.socialmedia.socialmediaclone.services;
 
 import com.socialmedia.socialmediaclone.model.Comment;
+import com.socialmedia.socialmediaclone.model.CommentReply;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.model.User;
+import com.socialmedia.socialmediaclone.repository.CommentReplyRepository;
 import com.socialmedia.socialmediaclone.repository.CommentRepository;
 import com.socialmedia.socialmediaclone.repository.PostRepository;
 import com.socialmedia.socialmediaclone.repository.UserRepository;
@@ -18,11 +20,13 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final CommentReplyRepository commentReplyRepository;
 
-    public CommentService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public CommentService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, CommentReplyRepository commentReplyRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.commentReplyRepository = commentReplyRepository;
     }
 
     @Transactional
@@ -73,5 +77,36 @@ public class CommentService {
         userRepository.save(user);
 
         return commentRepository.save(comment);
+    }
+
+    public CommentReply likeDislikeReply(long userId, long replyId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        CommentReply reply = commentReplyRepository.findById(replyId).orElseThrow(() -> new RuntimeException("Reply not found"));
+
+        if(!reply.getLikedUsers().contains(user)) {
+            return likeReply(reply, user);
+        }
+
+        return dislikeReply(reply, user);
+    }
+
+    private CommentReply likeReply(CommentReply reply, User user) {
+        reply.getLikedUsers().add(user);
+        reply.setNumOfLikes(reply.getNumOfLikes() + 1);
+
+        user.getCommentReplies().add(reply);
+        userRepository.save(user);
+
+        return commentReplyRepository.save(reply);
+    }
+
+    private CommentReply dislikeReply(CommentReply reply, User user) {
+        reply.getLikedUsers().remove(user);
+        reply.setNumOfLikes(reply.getNumOfLikes() - 1);
+
+        user.getLikedCommentReplies().remove(reply);
+        userRepository.save(user);
+
+        return commentReplyRepository.save(reply);
     }
 }

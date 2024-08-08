@@ -38,6 +38,12 @@ public class CommentReply {
     @JoinColumn(name = "idUser", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "commentReply", fetch = FetchType.LAZY)
-    private List<LikedReply> likedReplies = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "likedreply",
+            joinColumns = @JoinColumn(name = "idCommentReply"),
+            inverseJoinColumns = @JoinColumn(name = "idUser")
+    )
+    @Builder.Default
+    private List<User> likedUsers = new ArrayList<>();
 }

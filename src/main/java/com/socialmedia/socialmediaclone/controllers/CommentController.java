@@ -1,6 +1,8 @@
 package com.socialmedia.socialmediaclone.controllers;
 
+import com.socialmedia.socialmediaclone.dto.ReplyDTO;
 import com.socialmedia.socialmediaclone.model.Comment;
+import com.socialmedia.socialmediaclone.model.CommentReply;
 import com.socialmedia.socialmediaclone.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +21,14 @@ public class CommentController {
 
     @PostMapping("/comment")
     public ResponseEntity<Comment> addComment(@RequestParam long userId, @RequestParam String content, @RequestParam long postId) {
-        try {
-            return new ResponseEntity<>(commentService.addComment(userId, content, postId), HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(commentService.addComment(userId, content, postId), HttpStatus.OK);
     }
 
-    @PutMapping("/likeDislikeComment")
+    @PatchMapping("/likeDislikeComment")
     public ResponseEntity<Comment> likeDislikeComment(@RequestParam long userId, @RequestParam long commentId) {
-        try {
-            return new ResponseEntity<>(commentService.likeDislikeComment(userId, commentId), HttpStatus.OK);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(commentService.likeDislikeComment(userId, commentId), HttpStatus.OK);
     }
+
+
 
 }

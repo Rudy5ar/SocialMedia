@@ -55,10 +55,10 @@ public class User implements UserDetails {
     private List<Following> followers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<LikedReply> likedReplies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<CommentReply> commentReplies = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "likedUsers")
+    private List<CommentReply> likedCommentReplies = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
