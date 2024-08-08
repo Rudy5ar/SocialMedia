@@ -1,20 +1,13 @@
 package com.socialmedia.socialmediaclone.controllers;
 
 import com.socialmedia.socialmediaclone.model.Comment;
-import com.socialmedia.socialmediaclone.model.Post;
-import com.socialmedia.socialmediaclone.model.User;
-import com.socialmedia.socialmediaclone.repository.CommentRepository;
-import com.socialmedia.socialmediaclone.repository.PostRepository;
-import com.socialmedia.socialmediaclone.repository.UserRepository;
 import com.socialmedia.socialmediaclone.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/comment")
+@RestController
+@RequestMapping("/api/comment")
 public class CommentController {
 
 

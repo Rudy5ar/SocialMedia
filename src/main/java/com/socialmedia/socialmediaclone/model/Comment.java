@@ -35,7 +35,7 @@ public class Comment {
 
     @ManyToMany
     @JoinTable(
-            name = "liked_comment",
+            name = "likedcomment",
             joinColumns = @JoinColumn(name = "idComment"),
             inverseJoinColumns = @JoinColumn(name = "idUser")
     )
