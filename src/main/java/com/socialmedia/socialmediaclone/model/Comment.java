@@ -2,7 +2,6 @@ package com.socialmedia.socialmediaclone.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idComment")
-    private Long idComment;
+    private Long id;
 
     @Column(nullable = false)
     private String text;
@@ -35,10 +35,13 @@ public class Comment {
 
     @ManyToMany
     @JoinTable(
-            name = "LikedComment",
+            name = "liked_comment",
             joinColumns = @JoinColumn(name = "idComment"),
             inverseJoinColumns = @JoinColumn(name = "idUser")
     )
     @Builder.Default
     private List<User> likedUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY)
+    private List<CommentReply> replies = new ArrayList<>();
 }
