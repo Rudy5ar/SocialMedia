@@ -1,6 +1,5 @@
 package com.socialmedia.socialmediaclone.services;
 
-import com.socialmedia.socialmediaclone.dto.ReplyDTO;
 import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.CommentReply;
 import com.socialmedia.socialmediaclone.model.User;

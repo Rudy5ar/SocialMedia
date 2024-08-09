@@ -2,9 +2,8 @@ package com.socialmedia.socialmediaclone.controllers;
 
 import com.socialmedia.socialmediaclone.dto.UserDTO;
 import com.socialmedia.socialmediaclone.mapper.UserMapper;
-import com.socialmedia.socialmediaclone.model.Comment;
 import com.socialmedia.socialmediaclone.model.Following;
-import com.socialmedia.socialmediaclone.model.User;
+import com.socialmedia.socialmediaclone.repository.UserRepository;
 import com.socialmedia.socialmediaclone.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,17 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService, UserMapper userMapper, UserRepository userRepository) {
         this.userService = userService;
         this.userMapper = userMapper;
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return new ResponseEntity<>(userRepository.findAll().stream().map(userMapper::toDto).toList(), HttpStatus.OK);
     }
 
     @PostMapping("follow")

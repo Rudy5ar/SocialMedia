@@ -1,9 +1,9 @@
 package com.socialmedia.socialmediaclone.services;
 
+import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.model.Like;
 import com.socialmedia.socialmediaclone.model.Post;
 import com.socialmedia.socialmediaclone.model.User;
-import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.repository.LikeRepository;
 import com.socialmedia.socialmediaclone.repository.PostRepository;
 import com.socialmedia.socialmediaclone.repository.UserRepository;

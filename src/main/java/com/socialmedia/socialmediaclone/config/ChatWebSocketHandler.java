@@ -1,5 +1,8 @@
 package com.socialmedia.socialmediaclone.config;
 
+import com.socialmedia.socialmediaclone.services.JwtService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -12,11 +15,21 @@ import java.util.Set;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
-    // Set to keep track of all connected WebSocket sessions
     private final Set<WebSocketSession> sessions = Collections.synchronizedSet(new HashSet<>());
+
+    JwtService jwtService;
+
+    public ChatWebSocketHandler(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Authentication auth = (Authentication) session.getAttributes().get("auth");
+        if (auth == null) {
+            session.close();
+            return;
+        }
         sessions.add(session);
     }
 
@@ -28,7 +41,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
-        // Broadcast the received message to all connected sessions
         for (WebSocketSession s : sessions) {
             if (s.isOpen() && !s.equals(session)) {
                 try {

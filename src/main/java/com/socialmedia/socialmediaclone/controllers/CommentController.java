@@ -1,8 +1,6 @@
 package com.socialmedia.socialmediaclone.controllers;
 
-import com.socialmedia.socialmediaclone.dto.ReplyDTO;
 import com.socialmedia.socialmediaclone.model.Comment;
-import com.socialmedia.socialmediaclone.model.CommentReply;
 import com.socialmedia.socialmediaclone.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
