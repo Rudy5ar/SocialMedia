@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <style>
+        #messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #input {
+            width: calc(100% - 90px);
+        }
+    </style>
+</head>
+<body>
+<h1>Chat</h1>
+<div>
+    <select id="userSelect"></select>
+    <input type="text" id="input" placeholder="Type a message..." />
+    <button id="sendButton">Send</button>
+</div>
+<div id="messages"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messagesDiv = document.getElementById('messages');
+        const input = document.getElementById('input');
+        const sendButton = document.getElementById('sendButton');
+        const userSelect = document.getElementById('userSelect');
+
+        function connectWebSocket() {
+            const token = localStorage.getItem('authToken');
+            const ws = new WebSocket(`ws://localhost:8080/ws/chat?token=${token}`);
+
+            ws.onopen = function() {
+                console.log('WebSocket connection established');
+            };
+
+            ws.onmessage = function(event) {
+                const message = document.createElement('div');
+                message.textContent = event.data;
+                messagesDiv.appendChild(message);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            };
+
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = function(event) {
+                console.log('WebSocket connection closed. Code:', event.code, 'Reason:', event.reason);
+                setTimeout(connectWebSocket, 5000);
+            };
+
+            sendButton.onclick = function() {
+                if (ws.readyState === WebSocket.OPEN) {
+                    const selectedUser = userSelect.value;
+                    const message = input.value;
+                    if (message.trim() && selectedUser) {
+                        const payload = JSON.stringify({
+                            to: selectedUser,
+                            message: message
+                        });
+                        ws.send(payload);
+                        input.value = '';
+                    }
+                } else {
+                    console.log('WebSocket is not open. Current state:', ws.readyState);
+                }
+            };
+        }
+
+        connectWebSocket();
+
+        // Fetch users and populate dropdown
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(users => {
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.username;
+                    option.textContent = user.username;
+                    userSelect.appendChild(option);
+                });
+            });
+    });
+</script>
+</body>
+</html>

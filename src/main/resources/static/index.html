@@ -1,76 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat WebSocket</title>
+    <title>Login</title>
     <style>
-        #messages {
+        #loginForm {
+            width: 300px;
+            margin: 100px auto;
+            padding: 20px;
             border: 1px solid #ddd;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-        }
-        #input {
-            width: calc(100% - 90px);
+            border-radius: 5px;
         }
     </style>
-    <script type="text/javascript">
-        let ws;
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const messagesDiv = document.getElementById("messages");
-            const input = document.getElementById("input");
-            const sendButton = document.getElementById("sendButton");
-            const userSelect = document.getElementById("userSelect");
-
-            function connectWebSocket() {
-                ws = new WebSocket("ws://localhost:8080/ws/chat");
-                ws.onmessage = function(event) {
-                    const message = document.createElement("div");
-                    message.textContent = event.data;
-                    messagesDiv.appendChild(message);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
-                };
-            }
-
-            sendButton.onclick = function() {
-                if (!ws || ws.readyState !== WebSocket.OPEN) {
-                    connectWebSocket();
-                }
-                const selectedUser = userSelect.value;
-                const message = input.value;
-                if (message.trim() && selectedUser) {
-                    const payload = JSON.stringify({
-                        to: selectedUser,
-                        message: message
-                    });
-                    ws.send(payload);
-                    input.value = "";
-                }
-            };
-
-            // Fetch users and populate dropdown
-            fetch('/api/user')
-                .then(response => response.json())
-                .then(users => {
-                    users.forEach(user => {
-                        const option = document.createElement("option");
-                        option.value = user.username;
-                        option.textContent = user.username;
-                        userSelect.appendChild(option);
-                    });
-                });
-        });
-    </script>
 </head>
 <body>
-<h1>Chat WebSocket</h1>
-<div>
-    <select id="userSelect">
-
-    </select>
-    <input type="text" id="input" placeholder="Type a message..." />
-    <button id="sendButton">Send</button>
+<div id="loginForm">
+    <h2>Login</h2>
+    <form id="loginFormElement">
+        <input type="text" id="username" placeholder="Username" required /><br /><br />
+        <input type="password" id="password" placeholder="Password" required /><br /><br />
+        <button type="submit">Login</button>
+    </form>
 </div>
-<div id="messages"></div>
+
+<script>
+    document.getElementById('loginFormElement').onsubmit = async function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/auth/login', { // Replace with your login endpoint
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const token = data.token; // Assume token is returned in { token: '...' } format
+                localStorage.setItem('authToken', token); // Store token in localStorage
+                window.location.href = '/chat.html'; // Redirect to chat page
+            } else {
+                alert('Login failed');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+</script>
 </body>
 </html>
