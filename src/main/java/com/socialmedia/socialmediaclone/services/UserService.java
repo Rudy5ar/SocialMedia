@@ -51,7 +51,6 @@ public class UserService {
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
             throw new RuntimeException("User not logged in");
         }

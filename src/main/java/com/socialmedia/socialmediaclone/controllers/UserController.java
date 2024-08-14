@@ -3,6 +3,7 @@ package com.socialmedia.socialmediaclone.controllers;
 import com.socialmedia.socialmediaclone.dto.UserDTO;
 import com.socialmedia.socialmediaclone.mapper.UserMapper;
 import com.socialmedia.socialmediaclone.model.Following;
+import com.socialmedia.socialmediaclone.model.User;
 import com.socialmedia.socialmediaclone.repository.UserRepository;
 import com.socialmedia.socialmediaclone.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -50,9 +51,11 @@ public class UserController {
         }
     }
 
-    @GetMapping("/current")
-    public UserDTO allUsers() {
-        return userMapper.toDto(userService.getCurrentUser());
+    @GetMapping("/currentUser")
+    public ResponseEntity<UserDTO> allUsers() {
+        User currentUser = userService.getCurrentUser();
+        return ResponseEntity.ok(userMapper.toDto(currentUser));
+
     }
 
 }

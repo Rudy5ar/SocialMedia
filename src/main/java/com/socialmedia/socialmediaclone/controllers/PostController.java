@@ -26,7 +26,8 @@ public class PostController {
     public ResponseEntity<Page<PostDTO>> getFollowedPosts(@RequestParam int pageNumber, @RequestParam int pageSize) {
         try {
             Page<Post> pages = postService.getFollowedPosts(pageNumber, pageSize);
-            return new ResponseEntity<>(pages.map(postMapper::toDto), HttpStatus.OK);
+            Page<PostDTO> dtos = pages.map(postMapper::toDto);
+            return new ResponseEntity<>(dtos, HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,19 +56,25 @@ public class PostController {
     }
 
     @DeleteMapping("{postId}")
-    public ResponseEntity<Boolean> deletePost(@PathVariable long postId) {
+    public ResponseEntity<Boolean> deletePost(@PathVariable int postId) {
         postService.deletePost(postId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("likeDislikePost")
-    public ResponseEntity<Post> likeDislikePost(@RequestParam long idPost) {
-        try {
-            return new ResponseEntity<>(postService.likeDislikePost(idPost), HttpStatus.OK);
+    public ResponseEntity<Boolean> likeDislikePost(@RequestParam int idPost) {
+        if(postService.likeDislikePost(idPost) != null){
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("isLiked")
+    public ResponseEntity<Boolean> isLiked(@RequestParam int idPost) {
+        if(postService.isLiked(idPost) != null){
+            return new ResponseEntity<>(true, HttpStatus.OK);
         }
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
 }

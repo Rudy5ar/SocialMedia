@@ -49,7 +49,9 @@ public class PostService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        return postRepository.findByUsersOrderByDateCreatedDesc(followedUsers, pageable);
+        Page<Post> list = postRepository.findByUsersOrderByDateCreatedDesc(followedUsers, pageable);
+
+        return list;
     }
 
     public Post createPost(String description, MultipartFile file) throws IOException {
@@ -62,12 +64,12 @@ public class PostService {
         return newPost;
     }
 
-    public void deletePost(long postId) {
+    public void deletePost(int postId) {
         postRepository.delete(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("No post found with id: " + postId)));
     }
 
     @Transactional
-    public Post likeDislikePost(long idPost) {
+    public Post likeDislikePost(int idPost) {
         Post post = postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found"));
         User user = userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -88,6 +90,7 @@ public class PostService {
         likeRepository.save(like);
 
         post.getLikes().add(like);
+        post.setTotalLikes(post.getTotalLikes() + 1);
         postRepository.save(post);
         return post;
     }
@@ -102,4 +105,7 @@ public class PostService {
         return post;
     }
 
+    public Like isLiked(int idPost) {
+        return likeRepository.findByUserAndPost(userService.getCurrentUser(), postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found")));
+    }
 }

@@ -28,7 +28,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment addComment(@RequestParam long userId, @RequestParam String content, @RequestParam long postId) {
+    public Comment addComment(@RequestParam long userId, @RequestParam String content, @RequestParam int postId) {
         Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
         User user = userRepository.findById(userId).orElseThrow(RuntimeException::new);
         Comment comment = new Comment();

@@ -17,7 +17,7 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPost")
-    private Long id;
+    private Integer id;
 
     @Builder.Default
     private Integer totalLikes = 0;
