@@ -59,7 +59,7 @@ public class PostService {
         newPost.setDescription(description);
         newPost.setImage(file.getBytes());
         newPost.setDateCreated(LocalDate.now());
-        newPost.setUser(userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("No user")));
+        newPost.setUser(userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("No username")));
         postRepository.save(newPost);
         return newPost;
     }

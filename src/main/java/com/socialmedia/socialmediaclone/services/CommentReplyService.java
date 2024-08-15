@@ -25,7 +25,7 @@ public class CommentReplyService {
     }
 
     public CommentReply createReply(String text, long userId, long commentId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("No user found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("No username found"));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("No comment found"));
         CommentReply commentReply = new CommentReply();
         commentReply.setText(text);

@@ -8,25 +8,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentMapper {
 
-    private final UserRepository userRepository;
+    private final ReplyMapper replyMapper;
 
-    public CommentMapper(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CommentMapper(ReplyMapper replyMapper) {
+        this.replyMapper = replyMapper;
     }
 
     public CommentDTO toDto(Comment c) {
         return CommentDTO.builder()
+                .id(c.getId())
                 .text(c.getText())
                 .numOfLikes(c.getNumOfLikes())
-                .user(c.getUser().getUsername())
-                .build();
-    }
-
-    public Comment fromDto(CommentDTO dto) {
-        return Comment.builder()
-                .text(dto.text())
-                .numOfLikes(dto.numOfLikes())
-                .user(userRepository.findByUsername(dto.user()).orElseThrow(() -> new RuntimeException("No user with username to map")))
+                .username(c.getUser().getUsername())
+                .replies(c.getReplies().stream()
+                        .map(replyMapper::toDto)
+                        .toList())
                 .build();
     }
 }

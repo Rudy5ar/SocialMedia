@@ -9,8 +9,10 @@ public class ReplyMapper {
 
     public ReplyDTO toDto(CommentReply r) {
         return ReplyDTO.builder()
+                .id(r.getId())
                 .text(r.getText())
                 .numOfLikes(r.getNumOfLikes())
+                .username(r.getUser().getUsername())
                 .build();
     }
 

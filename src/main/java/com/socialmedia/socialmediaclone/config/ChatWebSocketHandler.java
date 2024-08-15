@@ -39,12 +39,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             if (username != null) {
 
                 var user = userRepository.findByUsername(username)
-                        .orElseThrow(() -> new RuntimeException("No user with username"));
+                        .orElseThrow(() -> new RuntimeException("No username with username"));
 
                 if (jwtService.isTokenValid(token, user)) {
                     session.getAttributes().put("username", username);
                     sessions.add(session);
-                    System.out.println("WebSocket connection established with user: " + username);
+                    System.out.println("WebSocket connection established with username: " + username);
                 } else {
                     session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Invalid Token"));
                 }
@@ -64,7 +64,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             JsonNode payloadNode = objectMapper.readTree(message.getPayload());
             String recipient = payloadNode.get("to").asText();
             String textMessage = payloadNode.get("message").asText();
-            System.out.println("Message from user " + username + ": " + textMessage);
+            System.out.println("Message from username " + username + ": " + textMessage);
 
             for (WebSocketSession s : sessions) {
                 if (s.isOpen() && s.getAttributes().get("username").equals(recipient)) {
@@ -79,7 +79,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
-        System.out.println("WebSocket connection closed with user: " + session.getAttributes().get("username"));
+        System.out.println("WebSocket connection closed with username: " + session.getAttributes().get("username"));
     }
 
     private String getTokenFromSession(WebSocketSession session) {
