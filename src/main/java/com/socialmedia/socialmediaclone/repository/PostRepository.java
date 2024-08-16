@@ -15,7 +15,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Page<Post> findByUserOrderByDateCreatedDesc(User user, Pageable pageable);
-
+    List<Post> findByUserOrderByDateCreatedDesc(User user);
     @Query("SELECT p FROM Post p WHERE p.user IN :users ORDER BY p.dateCreated DESC")
     Page<Post> findByUsersOrderByDateCreatedDesc(@Param("users") List<User> users, Pageable pageable);
 

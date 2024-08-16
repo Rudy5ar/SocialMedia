@@ -1,5 +1,6 @@
 package com.socialmedia.socialmediaclone.services;
 
+import com.socialmedia.socialmediaclone.dto.PostDTO;
 import com.socialmedia.socialmediaclone.model.Following;
 import com.socialmedia.socialmediaclone.model.Like;
 import com.socialmedia.socialmediaclone.model.Post;
@@ -56,21 +57,23 @@ public class PostService {
 
     public Post createPost(String description, MultipartFile file) throws IOException {
         Post newPost = new Post();
-        newPost.setDescription(description);
-        newPost.setImage(file.getBytes());
-        newPost.setDateCreated(LocalDate.now());
-        newPost.setUser(userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("No username")));
-        postRepository.save(newPost);
+        for(int i = 0; i < 100; i++){
+            newPost.setDescription(description);
+            newPost.setImage(file.getBytes());
+            newPost.setDateCreated(LocalDate.now());
+            newPost.setUser(userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("No username")));
+            postRepository.save(newPost);
+        }
         return newPost;
     }
 
     public void deletePost(int postId) {
-        postRepository.delete(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("No post found with id: " + postId)));
+        postRepository.delete(getPost(postId));
     }
 
     @Transactional
     public Post likeDislikePost(int idPost) {
-        Post post = postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found"));
+        Post post = getPost(idPost);
         User user = userRepository.findById(userService.getCurrentUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
         for (Like like : post.getLikes()) {
@@ -106,6 +109,16 @@ public class PostService {
     }
 
     public Like isLiked(int idPost) {
-        return likeRepository.findByUserAndPost(userService.getCurrentUser(), postRepository.findById(idPost).orElseThrow(() -> new RuntimeException("No post found")));
+        return likeRepository.findByUserAndPost(userService.getCurrentUser(), getPost(idPost));
+    }
+
+    public Page<Post> getPostsForUser(String username, int pageNumber, int pageSize) {
+        return postRepository.findByUserOrderByDateCreatedDesc(
+                userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("No user found")),
+                PageRequest.of(pageNumber, pageSize));
+    }
+
+    public Post getPost(int postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("No post found"));
     }
 }
