@@ -3,6 +3,7 @@
 ## Overview
 
 This is a social media clone application built using Java and Spring Boot. The application provides features such as user authentication, posting, commenting, liking, following, and chatting.
+NOTE: The project is on the MASTER branch, not main
 
 ## Features
 
